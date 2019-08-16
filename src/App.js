@@ -17,30 +17,41 @@ url: "https://graphql.com",
 author: "Mark Zuckerberg",
 num_comments: 2,
 points :5,
-objectId: 2	
-	
+objectId: 2
+
 }
 ]
+const isSearched= (searchTerm) => (item) =>item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+
 class  App extends Component {
 	constructor(props){
 		super(props)
 		this.state ={
 			list,
-			image:"hut.png"
-		}
-	this.onDismiss = this.onDismiss.bind(this);	
+      searchTerm:"",
+				}
+	this.onDismiss = this.onDismiss.bind(this);
+	this.onSearchChange =this.onSearchChange.bind(this);
 	}
-	
+
 	onDismiss(id){
-		
+
 		const isNotId = (item) => item.objectId  !==id
 		const updatedList = this.state.list.filter(isNotId)
 		this.setState({list:updatedList});
 	}
+	onSearchChange(event){
+		this.setState ({searchTerm : event.target.value});
+
+	}
 	render(){
   return (
     <div className="App">
-	{this.state.list.map(item => <div key ={item.objectId}><span><a href={item.url}>{item.title}</a></span>
+		<form>
+<input type="text" onChange ={this.onSearchChange}/>
+		</form>
+	{this.state.list.filter(isSearched(this.state.searchTerm)).map(item => <div key ={item.objectId}><span><a href={item.url}>{item.title}</a></span>
 	<span>{item.author}</span>
 	<span>{item.num_comments}</span>
 	<span>{item.points}</span>
