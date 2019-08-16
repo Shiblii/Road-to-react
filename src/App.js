@@ -46,15 +46,18 @@ class  App extends Component {
 
 	}
 	render(){
+		const {searchTerm,list} =this.state
   return (
     <div className="App">
 		<form>
+		//different injection of an event
 <input type="text" onChange ={this.onSearchChange}/>
 		</form>
 	{this.state.list.filter(isSearched(this.state.searchTerm)).map(item => <div key ={item.objectId}><span><a href={item.url}>{item.title}</a></span>
 	<span>{item.author}</span>
 	<span>{item.num_comments}</span>
 	<span>{item.points}</span>
+	/*different injection of onDismiss Event*/
 	<span><button onClick= {() => this.onDismiss(item.objectId)}>Dismiss</button></span>
 	</div>)}
     </div>
