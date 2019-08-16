@@ -4,7 +4,7 @@ import hut from "./hut.png"
 import './App.css';
 const list = [
 {
-title:"React",
+title:"React js",
 url : "https://react.org",
 author: "Jordan Wale",
 num_comments : 4,
