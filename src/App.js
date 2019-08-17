@@ -63,9 +63,8 @@ onDismiss ={this.onDismiss}
   );
 }
 }
-class Search extends Component{
-	render(){
-		const {value,onChange,children} =this.props;
+function Search ({value,onChange,children}){
+
 		return (
 
 			<form>
@@ -78,10 +77,9 @@ class Search extends Component{
 
 		)
 	}
-}
-class Table extends Component{
-	render(){
-		const {list,pattern,onDismiss} = this.props;
+
+function Table ({list,pattern,onDismiss}){
+
 		return(
 			<div>
 			{list.filter(isSearched(pattern)).map(item => <div key ={item.objectId}><span><a href={item.url}>{item.title}</a></span>
@@ -96,10 +94,9 @@ class Table extends Component{
 			</div>
 )
 	}
-}
-class Button extends Component{
-render(){
-	const {onClick,children,className}= this.props;
+
+function Button ({onClick,children,className}){
+
 	return(
 
 
@@ -111,5 +108,5 @@ className ={className}>{children}</button>
 
 	)
 }
-}
+
 export default App;
