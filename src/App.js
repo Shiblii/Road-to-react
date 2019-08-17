@@ -89,12 +89,27 @@ class Table extends Component{
 			<span>{item.num_comments}</span>
 			<span>{item.points}</span>
 			/*different injection of onDismiss Event*/
-			<span><button onClick= {() =>onDismiss(item.objectId)}>Dismiss</button></span>
+			<span><Button onClick= {() =>onDismiss(item.objectId)}>Dismiss</Button></span>
 			</div>
 		)
 		}
 			</div>
 )
 	}
+}
+class Button extends Component{
+render(){
+	const {onClick,children,className}= this.props;
+	return(
+
+
+<button
+onClick={onClick}
+
+className ={className}>{children}</button>
+
+
+	)
+}
 }
 export default App;
