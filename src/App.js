@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 //import hut from "./hut.png"
-//import './App.css';
+import './App.css';
 const list = [
 {
 title:"React js",
@@ -80,7 +80,7 @@ const Search = ({value,onChange,children}) =>{
 		return (
 
 			<form>
-			//different injection of an event
+
 			{children}
 			<input type="text"
 			value={value}
@@ -100,7 +100,7 @@ const Table = ({list,pattern,onDismiss}) => {
 			<span style={midColumn}>{item.author}</span>
 			<span style={smallColumn}>{item.num_comments}</span>
 			<span style={smallColumn}>{item.points}</span>
-			/*different injection of onDismiss Event*/
+
 			<span style={smallColumn}><Button onClick= {() =>onDismiss(item.objectId)} className="button-inline">Dismiss</Button></span>
 			</div>
 		)
