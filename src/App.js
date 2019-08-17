@@ -63,7 +63,7 @@ onDismiss ={this.onDismiss}
   );
 }
 }
-function Search ({value,onChange,children}){
+const Search = ({value,onChange,children}) =>{
 
 		return (
 
@@ -78,7 +78,7 @@ function Search ({value,onChange,children}){
 		)
 	}
 
-function Table ({list,pattern,onDismiss}){
+const Table = ({list,pattern,onDismiss}) => {
 
 		return(
 			<div>
@@ -95,7 +95,7 @@ function Table ({list,pattern,onDismiss}){
 )
 	}
 
-function Button ({onClick,children,className}){
+const  Button  = ({onClick,children,className}) => {
 
 	return(
 
