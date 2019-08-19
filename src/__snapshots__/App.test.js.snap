@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App has a valid snapshot 1`] = `
+<div
+  className="page"
+>
+  <div
+    className="interactions"
+  >
+    <form
+      onSubmit={[Function]}
+    >
+      <input
+        onChange={[Function]}
+        type="text"
+        value="redux"
+      />
+      <button
+        type="submit"
+      >
+        Search me
+      </button>
+    </form>
+  </div>
+  <button
+    onClick={[Function]}
+  >
+    Click me
+  </button>
+</div>
+`;
+
+exports[`Button has a valid snapshot 1`] = `
+<button
+  className=""
+  type="button"
+>
+  Give me More
+</button>
+`;
+
+exports[`Search has a valid snapshot 1`] = `
+<form>
+  <input
+    type="text"
+  />
+  <button
+    type="submit"
+  />
+</form>
+`;

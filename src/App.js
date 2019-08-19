@@ -113,7 +113,7 @@ if(error){
             onChange={this.onSearchChange}
 							onSubmit ={this.onSearchSubmit}
           >
-            Search
+            Search me 
           </Search>
         </div>
         {
@@ -184,3 +184,4 @@ const Button = ({
   </button>
 
 export default App;
+export {Button,Search,Table};
