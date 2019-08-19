@@ -2,6 +2,10 @@ import React,{Component} from 'react';
 //import hut from "./hut.png"
 import './App.css';
 
+const  DEFAULT_QUERY="redux";
+const PATH_BASE ="https://hn.algolia.com/api/v1";
+const PATH_SEARCH ="/search";
+const PARAM_SEARCH = "query=";
 
 const largeColumn = {
 width: '40%',
@@ -13,10 +17,6 @@ const smallColumn = {
 width: '10%',
 };
 const isSearched= (searchTerm) => (item) =>item.title.toLowerCase().includes(searchTerm.toLowerCase());
-const  DEFAULT_QUERY="redux";
-const PATH_BASE ="https://hn.algolia.com/api/v1";
-const PATH_SEARCH ="/search";
-const PARAM_SEARCH = "query=";
 
 class  App extends Component {
 	constructor(props){
@@ -25,39 +25,54 @@ class  App extends Component {
 			result:null,
       searchTerm:DEFAULT_QUERY,
 				}
-				this.setSearchTopStories = this.setSearchTopStories.bind(this)
+	this.setSearchTopStories = this.setSearchTopStories.bind(this)
 	this.onDismiss = this.onDismiss.bind(this);
 	this.onSearchChange =this.onSearchChange.bind(this);
 	}
-setSearchTopStories(){
-	this.setState({this.state.result})
-}
+
+
+	setSearchTopStories(result){
+		this.setState({result})
+	}
+	componentDidMount(){
+		const  {searchTerm}= this.state;
+		fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}`)
+		.then(response => response.json())
+		.then(data => this.setSearchTopStories(data))
+		.catch(error => error)
+	}
+	onSearchChange(event){
+		this.setState ({searchTerm : event.target.value});
+
+	}
 	onDismiss(id){
 
 		const isNotId = (item) => item.objectId  !==id
 		const updatedList = this.state.list.filter(isNotId)
 		this.setState({list:updatedList});
 	}
-	onSearchChange(event){
-		this.setState ({searchTerm : event.target.value});
 
-	}
-	componentDidMount(){
-		fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}`)
-		.then(response => response.json)
-		.then(data => this.setSearchTopStories(this.state.results))
+
 	render(){
-		const {searchTerm,list} =this.state
+		const {searchTerm,result} =this.state
+
+		if (!result){
+			return null;
+		}
+		console.log(this.state);
   return (
+
     <div className="page">
-		<div className="interactions">
+		  <div className="interactions">
 		<Search
-value={searchTerm}
-onChange ={this.onSearchChange}
-		>Search</Search>
+       value={searchTerm}
+      onChange ={this.onSearchChange}
+		>
+		    Search
+		</Search>
 		</div>
 		<Table
-list ={list}
+list ={result.hits}
 pattern ={searchTerm}
 onDismiss ={this.onDismiss}
 		/>
