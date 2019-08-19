@@ -43,8 +43,9 @@ setSearchTopStories(){
 
 	}
 	componentDidMount(){
-		
-	}
+		fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}`)
+		.then(response => response.json)
+		.then(data => this.setSearchTopStories(this.state.results))
 	render(){
 		const {searchTerm,list} =this.state
   return (
