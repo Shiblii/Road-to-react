@@ -1,25 +1,7 @@
 import React,{Component} from 'react';
 //import hut from "./hut.png"
 import './App.css';
-const list = [
-{
-title:"React js",
-url : "https://react.org",
-author: "Jordan Wale",
-num_comments : 4,
-points : 2,
-objectId : 1
-},
-{
-title: "Graphql",
-url: "https://graphql.com",
-author: "Mark Zuckerberg",
-num_comments: 2,
-points :5,
-objectId: 2
 
-}
-]
 
 const largeColumn = {
 width: '40%',
@@ -31,19 +13,25 @@ const smallColumn = {
 width: '10%',
 };
 const isSearched= (searchTerm) => (item) =>item.title.toLowerCase().includes(searchTerm.toLowerCase());
-
+const  DEFAULT_QUERY="redux";
+const PATH_BASE ="https://hn.algolia.com/api/v1";
+const PATH_SEARCH ="/search";
+const PARAM_SEARCH = "query=";
 
 class  App extends Component {
 	constructor(props){
 		super(props)
 		this.state ={
-			list,
-      searchTerm:"",
+			result:null,
+      searchTerm:DEFAULT_QUERY,
 				}
+				this.setSearchTopStories = this.setSearchTopStories.bind(this)
 	this.onDismiss = this.onDismiss.bind(this);
 	this.onSearchChange =this.onSearchChange.bind(this);
 	}
-
+setSearchTopStories(){
+	this.setState({this.state.result})
+}
 	onDismiss(id){
 
 		const isNotId = (item) => item.objectId  !==id
@@ -53,6 +41,9 @@ class  App extends Component {
 	onSearchChange(event){
 		this.setState ({searchTerm : event.target.value});
 
+	}
+	componentDidMount(){
+		
 	}
 	render(){
 		const {searchTerm,list} =this.state
