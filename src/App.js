@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-
+import axios from "axios";
 const DEFAULT_QUERY = 'redux';
 
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
@@ -26,8 +26,10 @@ class App extends Component {
     super(props);
 
     this.state = {
-      result: null,
+      results: null,
+			searchKey:"",
       searchTerm: DEFAULT_QUERY,
+			error:null
     };
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
@@ -35,18 +37,25 @@ class App extends Component {
     this.onDismiss = this.onDismiss.bind(this);
 		this.onSearchSubmit =this.onSearchSubmit.bind(this);
 		this.fetchSearchTopStories =this.fetchSearchTopStories.bind(this);
+		this.needToSearchTopStories =this.needToSearchTopStories.bind(this)
   }
+needToSearchTopStories(searchTerm){
+	return !this.state.results[searchTerm];
+}
 
   setSearchTopStories(result) {
 		const { hits, page } = result;
-const oldHits = page !== 0
-? this.state.result.hits : [];
+		const { searchKey,results} = this.state;
+const oldHits = results && results[searchKey]
+? results[searchKey].hits : [];
 const updatedHits = [
    ...oldHits,
    ...hits
    ];
 this.setState({
-result: { hits: updatedHits, page }
+results: {...results,
+	[searchKey]:{ hits: updatedHits, page }
+}
 });
   }
 
@@ -54,14 +63,14 @@ result: { hits: updatedHits, page }
 		fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`)
 			.then(response => response.json())
 			.then(result => this.setSearchTopStories(result))
-			.catch(error => error);
+			.catch(error => this.setState({error:error}));
 
 
 	}
 
   componentDidMount() {
     const { searchTerm } = this.state;
-
+this.setState({searchKey:searchTerm});
 this.fetchSearchTopStories(searchTerm);
   }
 
@@ -71,22 +80,30 @@ this.fetchSearchTopStories(searchTerm);
 
 	onSearchSubmit(event){
 const {searchTerm} =this.state;
-this.fetchSearchTopStories(searchTerm)
+this.setState({searchKey:searchTerm})
+if(this.needToSearchTopStories(searchTerm)){
+	this.fetchSearchTopStories(searchTerm)
+}
+
 event.preventDefault();
 	}
 
   onDismiss(id) {
+		const {searchKey,results} =this.state;
+		const {hits,page}=results[searchKey];
     const isNotId = item => item.objectID !== id;
-    const updatedHits = this.state.result.hits.filter(isNotId);
-    this.setState({ result: {hits:updatedHits} });
+    const updatedHits = hits.filter(isNotId);
+    this.setState({ results : {...results,[searchKey]:{hits:updatedHits,page} }});
   }
 
 
   render() {
-    const { searchTerm, result } = this.state;
-const  page = (result && result.page) || 0
-
-
+    const { searchTerm, results,searchKey ,error} = this.state;
+const  page = (results && results[searchKey] &&results[searchKey].page) || 0
+const list =( results && results[searchKey]&&results[searchKey].hits) || [];
+if(error){
+	return <p className="paragraph">failed to fetch</p>
+}
     return (
       <div className="page">
         <div className="interactions">
@@ -99,12 +116,12 @@ const  page = (result && result.page) || 0
           </Search>
         </div>
         {
-					result ?<Table
-          list={result.hits}
+					results ?<Table
+          list={list}
           pattern={searchTerm}
           onDismiss={this.onDismiss}
         />:null}
-				<button onClick={() =>this.fetchSearchTopStories(searchTerm,page +1)}>Click me</button>
+				<button onClick={() =>this.fetchSearchTopStories(searchKey,page +1)}>Click me</button>
       </div>
     );
   }
