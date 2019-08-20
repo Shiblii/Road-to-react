@@ -201,42 +201,42 @@ return(
         <div className="table">
         <div className ="table-header">
         <span style ={{width:"40%"}}>
-        <sort
+        <Sort
         sortKey={"TITLE"}
         onSort={onSort}
         activeSortKey={sortKey}>
 
         TITLE
-        </sort>
+        </Sort>
         </span>
 
         <span style ={{width:"30%"}}>
-        <sort
+        <Sort
         sortKey={"Author"}
         onSort={onSort}
           activeSortKey={sortKey}>
 
         Author
-        </sort>
+        </Sort>
         </span>
 
         <span style ={{width:"10%"}}>
-        <sort
+        <Sort
         sortKey={"COMMENTS"}
         onSort={onSort}
         activeSortKey={sortKey}>
 
          Comments
-        </sort>
+        </Sort>
         </span>
 
         <span style ={{width:"10%"}}>
-        <sort
+        <Sort
         sortKey={"POINTS"}
         onSort={onSort}
         activeSortKey={sortKey}>
         Points
-        </sort>
+        </Sort>
         </span>
 
         <span style ={{width:"10%"}}>
@@ -296,7 +296,7 @@ const Sort =({sortKey,onSort,children,activeSortKey})=>{
   return(
   <Button
   onClick={()=> onSort(sortKey)}
-  className={sortClass.join("")}  >
+  className={sortClass}  >
    {children}
    </Button>
  );
