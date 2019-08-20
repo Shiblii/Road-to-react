@@ -111,7 +111,6 @@ if(error){
     return (
       <div className="page">
         <div className="interactions">
-
           <Search
             value={searchTerm}
             onChange={this.onSearchChange}
@@ -120,13 +119,20 @@ if(error){
             Search me
           </Search>
         </div>
-        {
-					results ?<Table
+        { error ? <div className="interactions">
+        <p>Something went wrong</p>
+        </div>
+        :
+					 <Table
           list={list}
-          pattern={searchTerm}
+
           onDismiss={this.onDismiss}
-        />:null}
-				<button onClick={() =>this.fetchSearchTopStories(searchKey,page +1)}>Click me</button>
+        />}
+        <div className="interactions">
+        {isLoading ? <Loading /> :
+				<button onClick={() =>this.fetchSearchTopStories(searchKey,page +1)}>More</button>
+}
+      </div>
       </div>
     );
   }
@@ -157,6 +163,10 @@ componentDidMount(){
 }
 
 class Table extends Component {
+  constructor(props){
+    super(props)
+    this.state ={}
+  }
   render(){
   const   { list,onDismiss } =this.props
     return(
