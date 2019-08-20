@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from "axios"
-
+import {sortBy} from "lodash"
+import classNames from "classnames";
+;
 const DEFAULT_QUERY = 'redux';
 
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
@@ -24,6 +26,13 @@ const smallColumn = {
 const Loading = () => <div> LOADING.....</div>;
 
 
+const SORTS ={
+  NONE: list => list,
+  TITLE:list => sortBy(list,"title"),
+  Author: list => sortBy(list,"author"),
+  COMMENTS: list =>sortBy(list,"num_comments").reverse(),
+  POINTS: list => sortBy(list,"points").reverse()
+};
 
 class App extends Component {
   constructor(props) {
@@ -34,7 +43,9 @@ class App extends Component {
 			searchKey:"",
       searchTerm: DEFAULT_QUERY,
 			error:null,
-      isLoading :false
+      isLoading :false,
+      sortKey:"NONE",
+      isSortReverse:false
     };
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
@@ -43,6 +54,11 @@ class App extends Component {
 		this.onSearchSubmit =this.onSearchSubmit.bind(this);
 		this.fetchSearchTopStories =this.fetchSearchTopStories.bind(this);
 		this.needToSearchTopStories =this.needToSearchTopStories.bind(this)
+    this.onSort =this.onSort.bind(this);
+  }
+  onSort(sortKey){
+    const isSortReverse =this.state.sortKey ===sortKey && !this.state.isSortReverse;
+    this.setState({sortKey,isSortReverse});
   }
 needToSearchTopStories(searchTerm){
 	return !this.state.results[searchTerm];
@@ -104,7 +120,7 @@ event.preventDefault();
 
 
   render() {
-    const { searchTerm, results,searchKey ,error,isLoading} = this.state;
+    const { searchTerm, results,searchKey ,error,isLoading,sortKey,isSortReverse} = this.state;
 const  page = (results && results[searchKey] &&results[searchKey].page) || 0
 const list =( results && results[searchKey]&&results[searchKey].hits) || [];
 if(error){
@@ -127,6 +143,9 @@ if(error){
         :
 					 <Table
           list={list}
+          sortKey={sortKey}
+isSortReverse={isSortReverse}
+          onSort={this.onSort}
 
           onDismiss={this.onDismiss}
         />}
@@ -165,16 +184,67 @@ componentDidMount(){
 
 }
 
-class Table extends Component {
-  constructor(props){
-    super(props)
-    this.state ={}
-  }
-  render(){
-  const   { list,onDismiss } =this.props
-    return(
+const  Table =({
+  list,
+  onDismiss,
+  sortKey,
+  onSort,
+  isSortReverse
+})=>{
+  const sortedList =SORTS[sortKey](list);
+  const reversSortedList =isSortReverse
+  ? sortedList.reverse()
+  :sortedList;
+
+
+return(
         <div className="table">
-          {list.map(item =>
+        <div className ="table-header">
+        <span style ={{width:"40%"}}>
+        <sort
+        sortKey={"TITLE"}
+        onSort={onSort}
+        activeSortKey={sortKey}>
+
+        TITLE
+        </sort>
+        </span>
+
+        <span style ={{width:"30%"}}>
+        <sort
+        sortKey={"Author"}
+        onSort={onSort}
+          activeSortKey={sortKey}>
+
+        Author
+        </sort>
+        </span>
+
+        <span style ={{width:"10%"}}>
+        <sort
+        sortKey={"COMMENTS"}
+        onSort={onSort}
+        activeSortKey={sortKey}>
+
+         Comments
+        </sort>
+        </span>
+
+        <span style ={{width:"10%"}}>
+        <sort
+        sortKey={"POINTS"}
+        onSort={onSort}
+        activeSortKey={sortKey}>
+        Points
+        </sort>
+        </span>
+
+        <span style ={{width:"10%"}}>
+      Archive
+</span>
+        </div>
+
+          {reversSortedList.map(item =>
             <div key={item.objectID} className="table-row">
               <span style={largeColumn}>
                 <a href={item.url}>{item.title}</a>
@@ -200,8 +270,8 @@ class Table extends Component {
           )}
         </div>
 
-    )
-  }
+    );
+
 }
 
 
@@ -219,8 +289,18 @@ const Button = ({
     {children}
   </button>
 
-  
 
+const Sort =({sortKey,onSort,children,activeSortKey})=>{
+  const sortClass =classNames("button-inline",{"button-active":sortKey ===activeSortKey});
+
+  return(
+  <Button
+  onClick={()=> onSort(sortKey)}
+  className={sortClass.join("")}  >
+   {children}
+   </Button>
+ );
+}
  const withLoading = (Component) => ({isLoading,...rest}) => isLoading ? <Loading/> :<Component {...rest}/>
 const ButtonWithLoading = withLoading(Button);
 export default App;
