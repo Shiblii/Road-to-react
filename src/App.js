@@ -21,6 +21,7 @@ const smallColumn = {
   width: '10%',
 };
 
+const Loading = () => <div> LOADING.....</div>;
 
 class App extends Component {
   constructor(props) {
@@ -30,7 +31,8 @@ class App extends Component {
       results: null,
 			searchKey:"",
       searchTerm: DEFAULT_QUERY,
-			error:null
+			error:null,
+      isLoading :false
     };
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
@@ -56,11 +58,12 @@ const updatedHits = [
 this.setState({
 results: {...results,
 	[searchKey]:{ hits: updatedHits, page }
-}
+},isLoading:false
 });
   }
 
 	fetchSearchTopStories(searchTerm, page = 0){
+    this.setState({isLoading:true})
 axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}`)
 
 			.then(result => this.setSearchTopStories(result.data))
@@ -99,7 +102,7 @@ event.preventDefault();
 
 
   render() {
-    const { searchTerm, results,searchKey ,error} = this.state;
+    const { searchTerm, results,searchKey ,error,isLoading} = this.state;
 const  page = (results && results[searchKey] &&results[searchKey].page) || 0
 const list =( results && results[searchKey]&&results[searchKey].hits) || [];
 if(error){
@@ -108,12 +111,13 @@ if(error){
     return (
       <div className="page">
         <div className="interactions">
+        
           <Search
             value={searchTerm}
             onChange={this.onSearchChange}
 							onSubmit ={this.onSearchSubmit}
           >
-            Search me 
+            Search me
           </Search>
         </div>
         {
@@ -127,19 +131,30 @@ if(error){
     );
   }
 }
+class Search  extends Component {
+componentDidMount(){
+  if(this.input){
+    this.input.focus();
+  }
+}
+  render (){
+  const { value, onChange, children ,onSubmit} =this.props;
 
-const Search = ({ value, onChange, children ,onSubmit}) =>
-  <form onSubmit={onSubmit}>
-   <input
-      type="text"
-      value={value}
-      onChange={onChange}
+      return(
+        <form onSubmit={onSubmit}>
+       <input
+          type="text"
+          value={value}
+          onChange={onChange}
+          ref ={el => this.input =el}
+        />
+    		<button type="submit">
+    		{children}
+    		</button>
+      </form>)
+  }
 
-    />
-		<button type="submit">
-		{children}
-		</button>
-  </form>
+}
 
 const Table = ({ list,onDismiss }) =>
   <div className="table">
