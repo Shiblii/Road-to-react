@@ -203,7 +203,7 @@ class   Table extends Component{
   const  {
     list,
     onDismiss,
-    onSort,
+  
 
   } = this.props;
 const {
