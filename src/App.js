@@ -23,8 +23,6 @@ const smallColumn = {
 
 const Loading = () => <div> LOADING.....</div>;
 
- const withEnhancement =(Component) =>(props) =><Component {...props}/>;
-
 
 
 class App extends Component {
@@ -133,9 +131,10 @@ if(error){
           onDismiss={this.onDismiss}
         />}
         <div className="interactions">
-        {isLoading ? <Loading /> :
-				<button onClick={() =>this.fetchSearchTopStories(searchKey,page +1)}>More</button>
-}
+        <ButtonWithLoading
+        isLoading  ={isLoading}
+				 onClick={() =>this.fetchSearchTopStories(searchKey,page +1)}>More</ButtonWithLoading>
+
       </div>
       </div>
     );
@@ -220,5 +219,9 @@ const Button = ({
     {children}
   </button>
 
+  
+
+ const withLoading = (Component) => ({isLoading,...rest}) => isLoading ? <Loading/> :<Component {...rest}/>
+const ButtonWithLoading = withLoading(Button);
 export default App;
 export {Button,Search,Table};
