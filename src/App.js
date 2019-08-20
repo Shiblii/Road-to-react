@@ -23,11 +23,9 @@ const smallColumn = {
 
 const Loading = () => <div> LOADING.....</div>;
 
-function withFeature(Component){
-  return function(props){
-    return <Component {...props}/>;
-  }
-}
+ const withEnhancement =(Component) =>(props) =><Component {...props}/>;
+
+
 
 class App extends Component {
   constructor(props) {
